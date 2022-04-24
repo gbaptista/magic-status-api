@@ -13,7 +13,11 @@ class App < Roda
       MPRIS.meta.each do |data|
         next if data['xesam:title'] == ''
 
-        messages << "#{data['xesam:artist']} - #{data['xesam:title']}"
+        message = "#{data['xesam:artist']} - #{data['xesam:title']}"
+
+        message = "#{message[0..60].strip}..." if message.length > 60
+
+        messages << message
       end
 
       JSON.generate({ messages: })
