@@ -2,6 +2,10 @@
 
 My personal local API for [_Magic Status_](https://github.com/gbaptista/magic-status).
 
+<div align="center">
+  <img alt="A screenshot of a panel with two widgets, the current time and the current song playing." src="https://raw.githubusercontent.com/gbaptista/assets/main/magic-status/magic-status-panel.png" width="40%">
+</div>
+
 - [Setup](#setup)
 - [Endpoints](#endpoints)
   - [`/time`](#time)
