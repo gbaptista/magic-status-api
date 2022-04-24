@@ -17,6 +17,15 @@ module MPRIS
       org.mpris.MediaPlayer2.Player Metadata
   BASH
 
+  POSITION = <<~BASH
+    gdbus call \
+      --session \
+      --dest={id} \
+      --object-path /org/mpris/MediaPlayer2 \
+      --method org.freedesktop.DBus.Properties.Get \
+      org.mpris.MediaPlayer2.Player Position
+  BASH
+
   def meta
     sources, = Open3.capture2(SOURCES)
     sources = sources.split("\n")
@@ -26,9 +35,17 @@ module MPRIS
     sources.each do |source|
       id = "org.mpris.MediaPlayer2.#{source}"
 
-      meta, = Open3.capture2(METADATA.sub('{id}', id).to_s)
+      meta, = Open3.capture2(METADATA.sub('{id}', id))
 
-      result << parse(meta)
+      position, = Open3.capture2(POSITION.sub('{id}', id))
+
+      parsed = {
+        'service' => id,
+        'Metadata' => parse(meta),
+        'Position' => parse(position)
+      }
+
+      result << parsed
     end
 
     result
@@ -41,10 +58,14 @@ module MPRIS
       result[item[:key]] = item[:value]
     end
 
+    return result[nil] unless result[nil].nil?
+
     result
   end
 
   def parts(raw)
+    return [raw.sub(/^\(</, '').sub(/>,\)$/, '')] unless raw[/^\(<\{/]
+
     result = raw.sub(/^\(<\{/, '').sub(/\}>,\)$/, '').split('>, ').map do |partial|
       "#{partial}>"
     end
@@ -54,7 +75,17 @@ module MPRIS
     result
   end
 
+  def parse_value(raw)
+    value = raw
+
+    value = raw.sub(/^int64 /, '').strip.to_i if raw[/^int64 /]
+
+    value
+  end
+
   def parse_item(raw)
+    return { value: parse_value(raw) } unless raw[/: </]
+
     parts = raw.split(': <')
 
     key = parts[0]
@@ -67,7 +98,7 @@ module MPRIS
       end
     end
 
-    { key:, value: }
+    { key:, value: parse_value(value) }
   end
 
   def smart_strip(content, params)
@@ -78,12 +109,10 @@ module MPRIS
 
     result = content.strip
 
-    if result[0] == first && result[-1] == last
-      result = result[1..(result.length - 2)]
-    end
+    result = result[1..(result.length - 2)] if result[0] == first && result[-1] == last
 
     result
   end
 
-  module_function :meta, :parse, :parts, :parse_item, :smart_strip
+  module_function :meta, :parse, :parts, :parse_item, :parse_value, :smart_strip
 end

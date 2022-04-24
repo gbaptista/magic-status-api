@@ -10,6 +10,7 @@ My personal local API for [_Magic Status_](https://github.com/gbaptista/magic-st
 - [Endpoints](#endpoints)
   - [`/time`](#time)
   - [`/music`](#music)
+  - [`/music-progress`](#music-progress)
 - [Development](#development)
 
 ## Setup
@@ -54,6 +55,25 @@ Learn more:
 - [MPRIS D-Bus Interface Specification](https://specifications.freedesktop.org/mpris-spec/latest/)
 - [MPRIS - ArchWiki](https://wiki.archlinux.org/title/MPRIS)
 - [Small Ruby Script - Gist](https://gist.github.com/Sledge/892428)
+
+### `/music-progress`
+
+Same as `/music`, but with a progress bar.
+
+```json
+{
+  "messages": [
+    {
+      "label": {
+        "text": "Carol Biazin - Inveja (Ao Vivo)"
+      },
+      "progress": {
+        "value": 0.63
+      }
+    }
+  ]
+}
+```
 
 ## Development
 
