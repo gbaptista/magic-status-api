@@ -4,6 +4,8 @@ My personal local API for [_Magic Status_](https://github.com/gbaptista/magic-st
 
 - [Setup](#setup)
 - [Endpoints](#endpoints)
+  - [`/time`](#time)
+  - [`/music`](#music)
 - [Development](#development)
 
 ## Setup
@@ -14,10 +16,10 @@ cd magic-status-api
 
 bundle
 
-bundle exec rackup -p 5000 -q
+bundle exec rackup -p 5000
 ```
 
-If you want logs, just remove `-q`.
+If you don't want logs, just add `-q` to the `rackup` command.
 
 ## Endpoints
 
@@ -61,7 +63,7 @@ bundle
 bundle exec rspec
 bundle exec rubocop -a
 
-bundle exec rackup -p 5000 -q
+bundle exec rackup -p 5000
 ```
 
-If you want logs, just remove `-q`.
+If you don't want logs, just add `-q` to the `rackup` command.
