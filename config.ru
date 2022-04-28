@@ -31,22 +31,6 @@ class App < Roda
 
       MPRIS.meta.each do |data|
         dbus << data
-        next if data['Metadata']['xesam:title'] == ''
-
-        messages << build_message(data)
-      end
-
-      JSON.generate({ messages:, dbus: })
-    end
-
-    r.get 'music-progress' do
-      response['Content-Type'] = 'application/json'
-
-      dbus = []
-      messages = []
-
-      MPRIS.meta.each do |data|
-        dbus << data
 
         next if data['Metadata']['xesam:title'] == ''
 
@@ -59,6 +43,7 @@ class App < Roda
             { value: data['Position'] / data['Metadata']['mpris:length'].to_f }
         end
 
+        messages << build_message(data)
         messages << message
       end
 
